@@ -3,7 +3,7 @@ var http = require('http'),
     path = require('path');
     fs   = require('fs');
 
-var index = fs.readFileSync(path.join(__dirname, 'public/index.html').toString();
+var index = fs.readFileSync(path.join(__dirname, 'public/index.html')).toString();
 
 http.createServer((req, res) => {
   if (req.headers['x-forward-proto'] != 'https') {
