@@ -11,12 +11,17 @@ http.createServer((req, res) => {
       'Location': 'https:\\' + req.headers.host + '/'
     });
     res.end();
-  } else if (req.url == '/') {
-    red.end(index);
-  } else {
-   /* res.writeHead(302, {
+  } else if (req.url.indexOf('?') > -1) {
+    res.writeHead(302, {
       'Location': 'https:\\' + req.headers.host + '/'
     });
-    res.end();*/
+    res.end();
+  } else if (req.url == '/') {
+    res.end(index);
+  } else {
+    res.writeHead(302, {
+      'Location': 'https:\\' + req.headers.host + '/'
+    });
+    res.end();
   }
 }).listen(process.env.PORT);
