@@ -14,9 +14,9 @@ http.createServer((req, res) => {
   } else if (req.url == '/') {
     red.end(index);
   } else {
-    res.writeHead(302, {
+   /* res.writeHead(302, {
       'Location': 'https:\\' + req.headers.host + '/'
     });
-    res.end();
+    res.end();*/
   }
 }).listen(process.env.PORT);
