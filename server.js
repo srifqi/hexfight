@@ -11,7 +11,7 @@ http.createServer((req, res) => {
       'Location': 'https:\\' + req.headers.host + '/'
     });
     res.end();
-  } else if (req.url.indexOf('?') > -1) {
+  } else if (req.url.indexOf('?') !== -1) {
     res.writeHead(302, {
       'Location': 'https:\\' + req.headers.host + '/'
     });
