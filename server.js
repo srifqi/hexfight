@@ -5,6 +5,8 @@ var http = require('http'),
 
 var index = fs.readFileSync(path.join(__dirname, 'public/index.html')).toString();
 
+var core = fs.readFileSync(path.join(__dirname, 'public/core.js')).toString();
+
 http.createServer((req, res) => {
   if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] == 'http') {
     res.writeHead(302, {
@@ -18,6 +20,8 @@ http.createServer((req, res) => {
     res.end();
   } else if (req.url == '/') {
     res.end(index);
+  } else if (req.url == '/core.js') {
+    res.end(core);
   } else {
     res.writeHead(302, {
       'Location': 'https:\\' + req.headers.host + '/'
