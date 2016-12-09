@@ -1,5 +1,5 @@
 var net = require('net');
 
 net.createServer((socket) => {
-  console.log('connection made');
+  socket.write('lolz');
 }).listen(process.env.PORT);
