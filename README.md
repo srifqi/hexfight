@@ -1,1 +1,1 @@
-hexfight
+https://hexfight.herokuapp.com
