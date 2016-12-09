@@ -1,11 +1,9 @@
 var http = require('http'),
-    net  = require('net'),
     path = require('path');
     fs   = require('fs'),
     port = process.env.PORT;
 
 var index = fs.readFileSync(path.join(__dirname, 'public/index.html')).toString();
-
 var core = fs.readFileSync(path.join(__dirname, 'public/core.js')).toString();
 
 http.createServer((req, res) => {
@@ -29,8 +27,4 @@ http.createServer((req, res) => {
     });
     res.end();
   }
-}).listen(port);
-
-net.createServer((socket) => {
-  socket.write(String(socket.remoteAddress));
 }).listen(port);
