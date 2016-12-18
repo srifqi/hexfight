@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title>hexfight.io</title>
-  <meta name="theme-color" content="#181818" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="hexfight" />
-  <meta property="og:title" content="hexfight.io" />
-  <meta property="og:description" content="hexfight" />
-  <meta name="keywords" content="hexfight, io" />
+	<meta charset="UTF-8" />
+	<title>hexfight.io</title>
+	<meta name="theme-color" content="#181818" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="description" content="hexfight" />
+	<meta property="og:title" content="hexfight.io" />
+	<meta property="og:description" content="hexfight" />
+	<meta name="keywords" content="hexfight, io" />
+	<!-- <script type="text/javascript" src="core.js"></script> -->
+	<script type="text/javascript" src="main.js"></script>
 </head>
-<body style="background:#181818">
-  <div id="menu">
-    <div>hexfight.io</div>
-    <div id="nickbox"><input value="Nick"></div>
-    <button>Play!</button>
-  </div>
-  <div id="rendering">
-    <canvas id="bg"></canvas>
-  </div>
-  <script type="text/javascript" src="core.is"></script>
+<body style="background:#181818;margin:0;overflow:hidden;">
+	<!-- <div id="menu">
+		<div>hexfight.io</div>
+		<div id="nickbox"><input value="Nick"></div>
+		<button>Play!</button>
+	</div> -->
+	<div id="rendering">
+		<canvas id="c" width=0 height=0 style="width:0;height:0;"></canvas>
+	</div>
+	<script>
+		var game = new Game();
+		game.start(c, "n00b");
+	</script>
 </body>
 </html>
