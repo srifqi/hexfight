@@ -20,7 +20,7 @@ module.exports.http = function(callback) {
   }.listen(module.exports.port);
 };
 
-exports.socket = function(callback) {
+module.exports.socket = function(callback) {
   wss = new wss({ port: module.exports.port });
 
   wss.on('connection', (ws) => {
