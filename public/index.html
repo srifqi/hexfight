@@ -9,8 +9,8 @@
 	<meta property="og:title" content="hexfight.io" />
 	<meta property="og:description" content="hexfight" />
 	<meta name="keywords" content="hexfight, io" />
-	<!-- <script type="text/javascript" src="core.js"></script> -->
-	<script type="text/javascript" src="main.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script type="text/javascript" src="main.js" async></script>
 </head>
 <body style="background:#181818;margin:0;overflow:hidden;">
 	<!-- <div id="menu">
@@ -21,9 +21,5 @@
 	<div id="rendering">
 		<canvas id="c" width=0 height=0 style="width:0;height:0;"></canvas>
 	</div>
-	<script>
-		var game = new Game();
-		game.start(c, "n00b");
-	</script>
 </body>
 </html>
