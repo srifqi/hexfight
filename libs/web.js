@@ -1,8 +1,9 @@
-// NOTE: Requires the 'ws' module.
-// Use 'npm install --save ws' to install.
+// NOTE: Requires both 'express' and 'ws' modules.
+// Use 'npm install --save express' to install express.
+// Use 'npm install --save ws' to install ws.
 
-var http = require('http'),
-    wss  = require('ws').Server;
+var app = require('express')(),
+    wss = require('ws').Server;
 
 module.exports = {};
 
@@ -11,13 +12,15 @@ module.exports.port = function(port) {
 };
 
 module.exports.http = function(callback) {
-  http.createServer((req, res) => {
+  app.use((req, res) => {
     callback({
       
     }, {
       
     });
-  }.listen(module.exports.port);
+  }
+
+  app.listen(module.exports.port);
 };
 
 module.exports.socket = function(callback) {
