@@ -29,6 +29,6 @@ module.exports.socket = function(callback) {
   wss.on('connection', (ws) => {
     callback({
       
-    };
+    });
   };
 };
