@@ -1,10 +1,12 @@
 {
   "name": "hexfight",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "HexFight",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Just assume it's okay\" && exit 1",
+    "preinstall": "rm -rf node_modules && npm cache clean",
+    "heroku-prebuild": "rm -rf node_modules && npm cache clean"
   },
   "keywords": [
     "hexfight",
