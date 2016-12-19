@@ -155,6 +155,12 @@ World.prototype = {
 
 		return this;
 	},
+	addFirst: function (id, player) {
+		this.ids.splice(0, 0, id);
+		this.children.splice(0, 0, player);
+
+		return this;
+	},
 	kill: function (id) {
 		this.children[id].die();
 
@@ -183,7 +189,10 @@ Game.prototype = {
 		this.game_over = false;
 
 		this.player = new Player(name, element);
-		this.world.add(socket.id, this.player);
+
+		this.world = new World();
+		this.world.addFirst(socket.id, this.player);
+
 		this.canvas = canvas;
 		this.canvas.scale = 1;
 		this.ctx = this.canvas.getContext('2d');
