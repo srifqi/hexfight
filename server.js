@@ -1,3 +1,5 @@
+// HexFight - a game | MIT License
+
 // Start the server.
 const express = require('express'),
 	PORT = process.env.PORT || 80;
@@ -11,9 +13,9 @@ app.use(express.static('public'));
 // Initialize WebSocket (using Socket.IO).
 var io = require('socket.io')(server);
 
-// ///////////////////
+// --------------- //
 // The Game Engine //
-// ///////////////////
+// --------------- //
 
 const TYPE_PLAYER = 1;
 const TYPE_FOOD = 2;
@@ -47,7 +49,7 @@ var Player = function (name, element) {
 
 	this.element = null;
 	this.powers = {};
-	this.points = 10;
+	this.points = 25;
 
 	this.pos = new v2();
 	this.dir = new v2();
@@ -107,9 +109,14 @@ var World = function (id) {
 };
 
 World.prototype = {
-	add: function (ids, player) {
-		this.ids.push(ids);
-		this.children.push(player);
+	add: function (id, player) {
+		var index = this.ids.indexOf(id);
+		if (index < 0) {
+			this.ids.push(id);
+			this.children.push(player);
+		} else {
+			this.children[index] = player;
+		}
 
 		return this;
 	},
@@ -117,11 +124,17 @@ World.prototype = {
 		var food = new Food();
 		food.element = ELEMENTS[Math.round(Math.random() * 5)];
 		food.pos.add(new v2().set(
-			Math.round(Math.random() * 1000 - 500),
-			Math.round(Math.random() * 1000 - 500)
+			Math.round(Math.random() * 10000 - 5000),
+			Math.round(Math.random() * 10000 - 5000)
 		));
 		food.points = Math.round(Math.random() * 1 + 1);
-		this.add(this.children.length + 1, food);
+		this.add(this.children.length + 1 + '', food);
+	},
+	kill: function (id) {
+		this.children[id].die();
+
+		this.ids.splice(id, 1);
+		this.children.splice(id, 1);
 	}
 };
 
@@ -141,15 +154,11 @@ Game.prototype = {
 				if (jj == undefined) continue;
 				var dist = ii.pos.distanceSq(jj.pos);
 				if (ii.points > jj.points && ii.points * ii.points >= dist) {
-					this.world.ids.splice(j, 1);
-					this.world.children.splice(j, 1);
 					if (ii.type === TYPE_PLAYER) ii.points += jj.points;
-					jj.die();
+					this.world.kill(j);
 				} else if (ii.points < jj.points && jj.points * jj.points >= dist) {
-					this.world.ids.splice(i, 1);
-					this.world.children.splice(i, 1);
 					if (jj.type === TYPE_PLAYER) jj.points += ii.points;
-					ii.die();
+					this.world.kill(i);
 				}
 			}
 		}
@@ -231,9 +240,9 @@ v2.prototype = {
 	}
 };
 
-// ////////////////////
+// ---------------- //
 // The Server Cycle //
-// ////////////////////
+// ---------------- //
 
 var game = new Game();
 
@@ -253,27 +262,34 @@ setInterval(BC, 1000 / 30);
 
 // User I/O.
 io.sockets.on('connection', function (socket) {
-	console.log('New player joins the game: ' + socket.id + '.');
+	console.log('New client: ' + socket.id + '.');
 
 	socket.on('init', function (data) {
 		var player = new Player(data.name, data.element);
 		game.world.add(socket.id, player);
+		console.log('A client join the game: ' + socket.id + '.');
 	});
 
 	socket.on('update', function (data) {
 		var id = game.world.ids.indexOf(socket.id);
-		if (id < 0) return;
-		game.world.children[id].copy(data);
+		if (id >= 0) {
+			game.world.children[id].copy(data);
+		}
 	});
 
 	socket.on('dies', function (data) {
-		console.log('A player dies: ' + socket.id + '.');
+		var id = game.world.ids.indexOf(socket.id);
+		if (id >= 0) {
+			game.world.kill(id);
+		}
+		console.log('A client dies: ' + socket.id + '.');
 	});
 
 	socket.on('disconnect', function () {
 		var id = game.world.ids.indexOf(socket.id);
-		if (id < 0) return;
-		game.world.children[id].die();
-		console.log('A player lefts the game: ' + socket.id + '.');
+		if (id >= 0) {
+			game.world.kill(id);
+		}
+		console.log('A client disconnected: ' + socket.id + '.');
 	});
 });

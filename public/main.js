@@ -1,8 +1,10 @@
+// HexFight - a game | MIT License
+
 var socket = io.connect('//' + location.hostname);
 
-// ///////////////////
+// --------------- //
 // The Game Engine //
-// ///////////////////
+// --------------- //
 
 const TYPE_PLAYER = 1;
 const TYPE_FOOD = 2;
@@ -43,7 +45,7 @@ var Player = function (name, element) {
 
 	this.element = element || null;
 	this.powers = {};
-	this.points = 10;
+	this.points = 25;
 
 	this.pos = new v2();
 	this.dir = new v2();
@@ -142,15 +144,27 @@ var World = function (id) {
 };
 
 World.prototype = {
-	add: function (ids, player) {
-		this.ids.push(ids);
-		this.children.push(player);
+	add: function (id, player) {
+		var index = this.ids.indexOf(id);
+		if (this.ids.indexOf(id) < 0) {
+			this.ids.push(id);
+			this.children.push(player);
+		} else {
+			this.children[index] = player;
+		}
 
 		return this;
+	},
+	kill: function (id) {
+		this.children[id].die();
+
+		this.ids.splice(id, 1);
+		this.children.splice(id, 1);
 	}
 };
 
 var Game = function () {
+	this.started = false;
 	this.world = new World();
 
 	this.game_over = false;
@@ -166,6 +180,8 @@ var Game = function () {
 
 Game.prototype = {
 	start: function (canvas, name, element) {
+		this.game_over = false;
+
 		this.player = new Player(name, element);
 		this.world.add(socket.id, this.player);
 		this.canvas = canvas;
@@ -213,6 +229,8 @@ Game.prototype = {
 
 		this.render();
 
+		this.started = true;
+
 		return this;
 	},
 	checkCollision: function () {
@@ -224,26 +242,18 @@ Game.prototype = {
 				if (jj == undefined) continue;
 				var dist = ii.pos.distanceSq(jj.pos);
 				if (ii.points > jj.points && ii.points * ii.points >= dist) {
-					this.world.children.splice(j, 1);
 					if (ii.type === TYPE_PLAYER) ii.points += jj.points;
-					jj.die();
+					this.world.kill(j);
 				} else if (ii.points < jj.points && jj.points * jj.points >= dist) {
-					this.world.children.splice(i, 1);
 					if (jj.type === TYPE_PLAYER) jj.points += ii.points;
-					ii.die();
+					this.world.kill(i);
 				}
 			}
 		}
 	},
 	update: function () {
-		if (this.player.points === 0) {
-			this.game_over = true;
-			clearInterval(this.game_update);
-
-			socket.emit('dies', this.player);
-			alert('Game over!');
-
-			this.ctx.clearRect(0, 0, this.width, this.height);
+		if (socket.id !== this.world.ids[0]) {
+			this.stop();
 
 			return;
 		}
@@ -255,6 +265,19 @@ Game.prototype = {
 		}
 
 		this.checkCollision();
+	},
+	stop: function () {
+		if (this.started === false || this.game_over === true) return;
+		this.started = false;
+		this.game_over = true;
+		clearInterval(this.game_update);
+
+		socket.emit('dies', this.player);
+		alert('Game over!');
+
+		this.ctx.clearRect(0, 0, this.width, this.height);
+
+		goMenu();
 	},
 	render: function () {
 		if (this.game_over) return;
@@ -353,36 +376,69 @@ v2.prototype = {
 	}
 };
 
-// ////////////////////
+// ---------------- //
 // The Client Cycle //
-// ////////////////////
+// ---------------- //
 
-var game;
+var game = new Game();
 
 socket.on('connect', function () {
-	game = new Game();
-	game.start(c, prompt('Enter nickname:'));
+	goMenu();
+	if (btn_play.getAttribute('disabled') != null) {
+		btn_play.removeAttribute('disabled');
+	}
+});
+
+socket.on('disconnect', function () {
+	game.stop();
+	goMenu();
+	btn_play.setAttribute('disabled', '');
 });
 
 socket.on('world_update', function (data) {
+	if (this.started === false || this.game_over === true) return;
+
 	game.world.ids.splice(1);
 	game.world.children.splice(1);
 	var ids = data.ids;
-	var c = data.children;
-	for (var i = 0; i < c.length; i++) {
+	var ch = data.children;
+	for (var i = 0; i < ch.length; i++) {
 		if (ids[i] === socket.id) {
-			game.world.children[0].copy(c[i]);
+			game.player.copy(ch[i]);
 			continue;
 		}
 
-		if (c[i].type === TYPE_PLAYER) {
+		if (ch[i].type === TYPE_PLAYER) {
 			var player = new Player();
-			player.copy(c[i]);
+			player.copy(ch[i]);
 			game.world.children.push(player);
-		} else if (c[i].type === TYPE_FOOD) {
+		} else if (ch[i].type === TYPE_FOOD) {
 			var food = new Food();
-			food.copy(c[i]);
+			food.copy(ch[i]);
 			game.world.children.push(food);
 		}
+		game.world.ids.push(ids[i]);
 	}
 });
+
+// --------- //
+// Main Menu //
+// --------- //
+
+function goMenu () {
+	dLoading.style.display = 'none';
+	dMenu.style.display = '';
+	dGame.style.display = 'none';
+}
+
+function goGame () {
+	dLoading.style.display = 'none';
+	dMenu.style.display = 'none';
+	dGame.style.display = '';
+}
+
+function goPlay () {
+	if (nick.value.length < 1) return;
+	goGame();
+	game.start(c, nick.value);
+}

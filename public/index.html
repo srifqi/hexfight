@@ -2,23 +2,29 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>hexfight.io</title>
+	<title>HexFight - a game</title>
 	<meta name="theme-color" content="#181818" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<meta name="description" content="hexfight" />
-	<meta property="og:title" content="hexfight.io" />
-	<meta property="og:description" content="hexfight" />
+	<meta name="description" content="HexFight - a game" />
+	<meta property="og:title" content="HexFight" />
+	<meta property="og:description" content="HexFight - a game" />
 	<meta name="keywords" content="hexfight, io" />
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 	<script type="text/javascript" src="main.js" async></script>
+	<style>
+#dLoading, #dMenu {margin:8px auto;width:256px;color:white;}
+	</style>
 </head>
 <body style="background:#181818;margin:0;overflow:hidden;">
-	<!-- <div id="menu">
-		<div>hexfight.io</div>
-		<div id="nickbox"><input value="Nick"></div>
-		<button>Play!</button>
-	</div> -->
-	<div id="rendering">
+	<div id="dLoading">
+		<small>Loading...</small>
+	</div>
+	<div id="dMenu" style="display:none;">
+		<h1>HexFight</h1>
+		<input id="nick" placeholder="nickname" autofocus />
+		<button id="btn_play" onclick="goPlay()">Play!</button>
+	</div>
+	<div id="dGame" style="display:none;">
 		<canvas id="c" width=0 height=0 style="width:0;height:0;"></canvas>
 	</div>
 </body>
