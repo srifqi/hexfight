@@ -123,7 +123,7 @@ Food.prototype.draw = function (ctx) {
 		var y = this.drawPoints * Math.sin(i * Math.PI * 2 / 3);
 
 		ctx.lineTo(x + 10, -y+10);  	
-+ }
+ }
 	ctx.closePath();
 	var hue = Math.log(this.element) / Math.log(2) * 60;
 	ctx.strokeStyle = 'hsl(' + hue + ',100%,50%)';
