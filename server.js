@@ -87,7 +87,7 @@ var Food = function () {
 	this.name = 'food';
 	this.type = TYPE_FOOD;
 	this.element = null;
-	this.points =Math.round(Math.random() * 5);
+	this.points =Math.floor(Math.random() * 5);
 	this.pos = new v2();
 };
 
@@ -170,7 +170,7 @@ Game.prototype = {
 			}
 		}
 
-		if (Math.random() > 0.2) {
+		if (Math.random() > 0.02) {
 			this.world.placeRandomFood();
 			this.last_food = Date.now();
 		}
