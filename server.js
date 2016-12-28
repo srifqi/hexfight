@@ -49,7 +49,7 @@ var Player = function (name, element) {
 
 	this.element = null;
 	this.powers = {};
-	this.points = 25;
+	this.points = 65;
 
 	this.pos = new v2();
 	this.dir = new v2();
@@ -87,7 +87,7 @@ var Food = function () {
 	this.name = 'food';
 	this.type = TYPE_FOOD;
 	this.element = null;
-	this.points = 1;
+	this.points =Math.round(Math.random() * 5);
 	this.pos = new v2();
 };
 
