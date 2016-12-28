@@ -170,7 +170,7 @@ Game.prototype = {
 			}
 		}
 
-		if (Date.now() - this.last_food > 100 && Math.random() <= 0.2) {
+		if (Math.random() > 0.2) {
 			this.world.placeRandomFood();
 			this.last_food = Date.now();
 		}
